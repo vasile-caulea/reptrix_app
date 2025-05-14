@@ -22,7 +22,7 @@ export async function getUser(email) {
         return response.Item;
     } catch (error) {
         console.error('Error getting user:', error);
-        return null;
+        throw error;
     }
 }
 

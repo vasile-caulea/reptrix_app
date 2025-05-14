@@ -1,6 +1,11 @@
 import { Outlet, Link } from "react-router-dom";
 
 function Layout() {
+
+    const handleLogout = () => {
+        alert('Logout successful!');
+    }
+
     return (
         <>
             <aside class="w-64 bg-gray-800 p-6 flex flex-col justify-between">
@@ -13,7 +18,7 @@ function Layout() {
                     </nav>
                 </div>
                 <div class="mt-6">
-                    <button class="text-sm hover:text-red-400">Logout</button>
+                    <button class="text-sm hover:text-red-400" onClick={handleLogout}>Logout</button>
                 </div>
             </aside>
 

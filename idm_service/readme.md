@@ -12,6 +12,7 @@ npm install http-status-codes
 npm install uuid
 npm install bcrypt
 npm install jsonwebtoken
+npm install cors
 ```
 
 For local run

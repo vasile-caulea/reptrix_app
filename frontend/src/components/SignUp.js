@@ -1,5 +1,7 @@
 
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { SignUpService } from '../services/Auth';
+import { useNavigate } from 'react-router-dom';
 
 function SignUp() {
     const [email, setEmail] = useState('');
@@ -7,16 +9,31 @@ function SignUp() {
     const [lname, setLName] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const navigate = useNavigate();
 
-    const handleSignup = (e) => {
+    const handleSignup = async (e) => {
         e.preventDefault();
-        // Aici vei face cererea de înregistrare
+
+        if (!email || !fname || !lname || !password) {
+            alert('Please fill in all fields');
+            return;
+        }
+
         if (password !== confirmPassword) {
             alert('Passwords do not match');
             return;
         }
-        console.log('Email:', email);
-        console.log('Password:', password);
+
+        try {
+            const response = await SignUpService({ email, password, fname, lname });
+            console.log('Login successful:', response);
+            alert('Account created successfully! Please login.');
+            navigate('/login');
+        }
+        catch (error) {
+            console.error('SignUp failed:', error);
+            alert(error.response.data.message);
+        }
     };
 
     return (
@@ -37,7 +54,7 @@ function SignUp() {
                             required
                         />
                     </div>
-                     <div className="mb-4  text-gray-700">
+                    <div className="mb-4  text-gray-700">
                         <label className="block" htmlFor="email">Last Name</label>
                         <input
                             type="text"
@@ -50,7 +67,7 @@ function SignUp() {
                             required
                         />
                     </div>
-                     <div className="mb-4  text-gray-700">
+                    <div className="mb-4  text-gray-700">
                         <label className="block" htmlFor="email">First Name</label>
                         <input
                             type="text"

@@ -15,7 +15,23 @@ export async function signin(user) {
         });
     }
 
-    const userDB = await getUser(email.trim());
+    let userDB;
+    try {
+        userDB = await getUser(email.trim());
+    }
+    catch (error) {
+        if (error['$metadata'] && error['$metadata'].httpStatusCode === 404) {
+            return buildResponse(StatusCodes.NOT_FOUND, {
+                message: 'User does not exist'
+            });
+        }
+        else {
+            return buildResponse(StatusCodes.INTERNAL_SERVER_ERROR, {
+                message: 'Could not retrieve user'
+            });
+        }
+    }
+
     if (!userDB || !userDB.email) {
         return buildResponse(StatusCodes.NOT_FOUND, {
             message: 'User does not exist'

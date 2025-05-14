@@ -1,15 +1,30 @@
-import React, { useState } from 'react';
-
+import { useState } from 'react';
+import { setUserLoggedIn, SignInService } from '../services/Auth';
+import { useNavigate } from 'react-router-dom';
 
 function SignIn() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        // Aici vei face cererea de login
-        console.log('Email:', email);
-        console.log('Password:', password);
+
+        if (!email || !password) {
+            alert('Please fill in all fields');
+            return;
+        }
+
+        try {
+            const response = await SignInService({ email, password });
+            setUserLoggedIn(response.data.message);
+            navigate('/');
+            console.log('Login successful:', response);
+        }
+        catch (error) {
+            console.error('Login failed:', error);
+            alert(error.response.data.message);
+        }
     };
 
     return (
