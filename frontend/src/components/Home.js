@@ -1,16 +1,20 @@
+import { getUserName } from "../services/Auth";
 import AddWorkout from "./AddWorkout";
 
 
 function Home() {
+
+  const userName = getUserName();
+
   return (
     <>
-      <h1 class="text-3xl font-semibold mb-4">Bun venit, Lica! 💪</h1>
+      <h1 className="text-3xl font-semibold mb-4">Welcome, {userName}! &#128170;</h1>
 
       <AddWorkout />
 
-      <section class="bg-gray-800 p-6 rounded-xl shadow-xl">
-        <h2 class="text-xl font-bold mb-4">📈 Statistici Recente</h2>
-        <p class="text-gray-400">Aici va fi un grafic cu progresul tău.</p>
+      <section className="bg-gray-800 p-6 rounded-xl shadow-xl">
+        <h2 className="text-xl font-bold mb-4">📈 Recent Statistics</h2>
+        <p className="text-gray-400">Graphic with recent statistics.</p>
       </section>
     </>
   );

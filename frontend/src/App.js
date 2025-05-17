@@ -15,10 +15,10 @@ function App() {
         <Route path="/" element={<Layout />} >
           <Route index path="/" element={<Home />} />
           <Route path="/add-workout" element={<AddWorkout />} />
-          <Route path="*" element={<NotFound />} />
         </Route>
         <Route path="/login" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );

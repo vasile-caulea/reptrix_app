@@ -1,14 +1,10 @@
 import axios from "axios";
-
-
-const API_URL = 'http://localhost:3001';
-const LOGIN_PATH = '/signin';
-const SIGNUP_PATH = '/signup';
+import { IDM_API_URL, SIGNIN_PATH, SIGNUP_PATH } from "../Constants";
 
 
 export async function SignInService(userDetails) {
     const { email, password } = userDetails;
-    return axios.post(`${API_URL}${LOGIN_PATH}`, {
+    return axios.post(`${IDM_API_URL}${SIGNIN_PATH}`, {
         email: email,
         password: password
     });
@@ -16,7 +12,7 @@ export async function SignInService(userDetails) {
 
 export async function SignUpService(userDetails) {
     const { email, password, fname, lname } = userDetails;
-    return axios.post(`${API_URL}${SIGNUP_PATH}`, {
+    return axios.post(`${IDM_API_URL}${SIGNUP_PATH}`, {
         email: email,
         password: password,
         firstName: fname,
@@ -47,5 +43,10 @@ export function getUserId() {
 }
 
 export function getUserName() {
-    return `${localStorage.getItem('fName')} ${localStorage.getItem('lName')}`;
+    const firstName = localStorage.getItem('fName') || '';
+    const lastName = localStorage.getItem('lName') || '';
+    if (firstName === '' && lastName === '') {
+        return 'user';
+    }
+    return `${firstName} ${lastName}`;
 }
