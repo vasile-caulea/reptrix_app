@@ -15,7 +15,7 @@ function Layout() {
                     <nav className="flex flex-col gap-4">
                         <Link to="/" className={hoverStyleClass}>&#127968; Dashboard</Link>
                         <Link to="/add-workout" className={hoverStyleClass}>&#10133; Add Workout</Link>
-                        <Link to="/" className={hoverStyleClass}>&#128202; Statistics</Link>
+                        <Link to="/workout-statistics" className={hoverStyleClass}>&#128202; Statistics</Link>
                     </nav>
                 </div>
                 <div className="mt-6">

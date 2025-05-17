@@ -7,6 +7,7 @@ import NotFound from "./components/NotFound";
 import AddWorkout from "./components/AddWorkout";
 import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
+import MyWorkouts from "./components/MyWorkouts";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/" element={<Layout />} >
           <Route index path="/" element={<Home />} />
           <Route path="/add-workout" element={<AddWorkout />} />
+          <Route path="/workout-statistics" element={<MyWorkouts />} />
         </Route>
         <Route path="/login" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />

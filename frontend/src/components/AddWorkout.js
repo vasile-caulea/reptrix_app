@@ -18,6 +18,7 @@ function AddWorkout() {
 
     const handleAddWorkout = async (e) => {
         e.preventDefault();
+        console.log(exerciseInput);
 
         if (!exerciseInput) {
             alert("Please select an exercise.");
@@ -32,7 +33,7 @@ function AddWorkout() {
         try {
             const response = await addWorkout({
                 date: formData.date,
-                exercise: exerciseInput,
+                exercise: exerciseInput[0],
                 repetitions: formData.repetitions,
                 sets: formData.sets,
                 weight: formData.weight

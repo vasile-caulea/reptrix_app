@@ -1,24 +1,12 @@
 
-import { getAllExercises } from "../services/WorkoutManangement";
 import { useEffect, useState } from "react";
+import { useExercises } from "../context/ExerciseContext";
 
 function ExerciseSelector({ onSelectExercise }) {
+    const allExercises = useExercises();
     const [exerciseInput, setExerciseInput] = useState("");
-    const [allExercises, setAllExercises] = useState([]);
     const [suggestions, setSuggestions] = useState([]);
     const [query, setQuery] = useState("");
-
-    useEffect(() => {
-        async function fetchExercises() {
-            try {
-                const data = await getAllExercises();
-                setAllExercises(data);
-            } catch (error) {
-                console.error("Error fetching exercises:", error);
-            }
-        }
-        fetchExercises();
-    }, []);
 
     useEffect(() => {
         if (!query) {
@@ -26,9 +14,8 @@ function ExerciseSelector({ onSelectExercise }) {
             return;
         }
         const lowerQuery = query.toLowerCase();
-        const filteredExercises = allExercises.filter((exercise) => exercise.name.toLowerCase().includes(lowerQuery));
+        const filteredExercises = Object.entries(allExercises).filter(([key, value]) => value.toLowerCase().includes(lowerQuery));
         setSuggestions(filteredExercises);
-
     }, [query, allExercises]);
 
     return (
@@ -47,15 +34,15 @@ function ExerciseSelector({ onSelectExercise }) {
                         {
                             suggestions.slice(0, 10).map((exercise) => (
                                 <li
-                                    key={exercise.id}
+                                    key={exercise[0]}
                                     className="p-2 hover:bg-gray-600 cursor-pointer"
                                     onClick={() => {
-                                        setExerciseInput(exercise.name);
+                                        setExerciseInput(exercise[1]);
                                         onSelectExercise(exercise);
                                         setQuery(null);
                                     }}
                                 >
-                                    {exercise.name}
+                                    {exercise[1]}
                                 </li>
                             ))
                         }

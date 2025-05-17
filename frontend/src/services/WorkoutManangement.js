@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { WGER_API_URL, WGER_API_VERSION, WGER_API_EXERCISE_INFO_PATH, WGER_API_LANGUAGE_ENGLISH } from '../Constants';
-import { WORKOUT_API_URL, WORKOUT_API_PATH } from '../Constants';
+import { WORKOUT_API_URL } from '../Constants';
 import { getToken } from './Auth';
 
 export async function getAllExercises() {
@@ -19,18 +19,38 @@ export async function getAllExercises() {
     }
 }
 
-export async function addWorkout(workout) {
-
+function getAuthHeaders() {
     const token = getToken();
     if (!token) {
-        throw new Error('You must be logged in to add a workout.');
+        throw new Error('You must be logged in.');
     }
-    return axios.post(`${WORKOUT_API_URL}${WORKOUT_API_PATH}`, workout,
-        {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        }
-    );
+
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+        throw new Error('User ID not found.');
+    }
+
+    return {
+        userId,
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    };
 }
 
+
+export async function addWorkout(workout) {
+
+    const { userId, headers } = getAuthHeaders();
+    return axios.post(`${WORKOUT_API_URL}/users/${userId}/workouts`, workout, {
+        headers: headers
+    });
+}
+
+export async function getAllWorkouts() {
+    const { userId, headers } = getAuthHeaders();
+
+    return axios.get(`${WORKOUT_API_URL}/users/${userId}/workouts`, {
+        headers: headers
+    });
+}

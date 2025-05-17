@@ -13,4 +13,3 @@ export const SIGNUP_PATH = '/signup';
 
 // WORKOUT API
 export const WORKOUT_API_URL = 'http://localhost:3001';
-export const WORKOUT_API_PATH = '/workouts';
