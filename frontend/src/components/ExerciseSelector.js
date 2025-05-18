@@ -14,7 +14,7 @@ function ExerciseSelector({ onSelectExercise }) {
             return;
         }
         const lowerQuery = query.toLowerCase();
-        const filteredExercises = Object.entries(allExercises).filter(([key, value]) => value.toLowerCase().includes(lowerQuery));
+        const filteredExercises = Object.entries(allExercises).filter(([key, value]) => value.name.toLowerCase().includes(lowerQuery));
         setSuggestions(filteredExercises);
     }, [query, allExercises]);
 
@@ -34,15 +34,15 @@ function ExerciseSelector({ onSelectExercise }) {
                         {
                             suggestions.slice(0, 10).map((exercise) => (
                                 <li
-                                    key={exercise[0]}
+                                    key={exercise[0].id}
                                     className="p-2 hover:bg-gray-600 cursor-pointer"
                                     onClick={() => {
-                                        setExerciseInput(exercise[1]);
-                                        onSelectExercise(exercise);
+                                        setExerciseInput(exercise[1].name);
+                                        onSelectExercise(exercise[1]);
                                         setQuery(null);
                                     }}
                                 >
-                                    {exercise[1]}
+                                    {exercise[1].name}
                                 </li>
                             ))
                         }

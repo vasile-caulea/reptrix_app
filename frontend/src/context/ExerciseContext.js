@@ -11,7 +11,7 @@ export function ExerciseProvider({ children }) {
             try {
                 const data = await getAllExercises();
                 const dict = data.reduce((acc, exercise) => {
-                    acc[exercise.id] = exercise.name;
+                    acc[exercise.id] = exercise;
                     return acc;
                 }, {});
                 setExercises(dict);

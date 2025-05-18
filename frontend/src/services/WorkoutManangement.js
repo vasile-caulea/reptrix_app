@@ -10,7 +10,8 @@ export async function getAllExercises() {
             const translation = (exercise.translations || []).find((t) => t.language === WGER_API_LANGUAGE_ENGLISH);
             return {
                 id: exercise.id,
-                name: translation?.name || 'Unnamed'
+                name: translation?.name || 'Unnamed',
+                categoryID: exercise.category.id,
             }
         });
     }
@@ -37,7 +38,6 @@ function getAuthHeaders() {
         },
     };
 }
-
 
 export async function addWorkout(workout) {
 

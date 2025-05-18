@@ -33,7 +33,10 @@ function AddWorkout() {
         try {
             const response = await addWorkout({
                 date: formData.date,
-                exercise: exerciseInput[0],
+                exercise: {
+                    id: exerciseInput.id,
+                    categoryID: exerciseInput.categoryID,
+                },
                 repetitions: formData.repetitions,
                 sets: formData.sets,
                 weight: formData.weight
