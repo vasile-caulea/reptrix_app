@@ -31,3 +31,19 @@ export async function getWorkouts(userId, query) {
         where: filters,
     });
 }
+
+export async function createWorkout(userId, workoutData) {
+    const { date, exerciseId, categoryId, repetitions, sets, weight } = workoutData;
+
+    return prismaC.workout.create({
+        data: {
+            userID: userId,
+            date: date,
+            exerciseID: exerciseId,
+            categoryID: categoryId,
+            repetitions: repetitions,
+            sets: sets,
+            weight: weight,
+        },
+    });
+}

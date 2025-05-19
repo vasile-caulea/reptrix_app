@@ -1,7 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 
-import { getWorkouts } from './service/database_op.js';
+import { getWorkouts, createWorkout } from './service/database_op.js';
+import { getValidatedQuery, validateWorkoutData } from './utils/utils.js';
 
 const app = express();
 app.use(cors());
@@ -46,47 +47,6 @@ async function verifyTokenMiddleware(req, res, next) {
 
 }
 
-function getValidatedQuery(query) {
-    const { startDate, endDate, exerciseCatId, exerciseId } = query;
-
-    // Validate and parse the query parameters
-    const result = {};
-    const isValidDate = (d) => !isNaN(new Date(d));
-
-    if (!startDate && endDate) {
-        throw new Error('End date provided without start date');
-    }
-
-    if (exerciseCatId && exerciseId) {
-        throw new Error('Both exercise category ID and exercise ID provided');
-    }
-
-    if (startDate) {
-        if (isValidDate(startDate)) {
-            result.startDate = new Date(startDate);
-        } else {
-            throw new Error('Invalid start date');
-        }
-    }
-
-    if (endDate) {
-        if (isValidDate(endDate)) {
-            result.endDate = new Date(endDate);
-        } else {
-            throw new Error('Invalid end date');
-        }
-    }
-
-    if (exerciseCatId) {
-        result.exerciseCatId = parseInt(exerciseCatId, 10);
-    }
-
-    if (exerciseId) {
-        result.exerciseId = parseInt(exerciseId, 10);
-    }
-    return result;
-}
-
 app.get('/users/:userId/workouts', verifyTokenMiddleware, async (req, res) => {
 
     const userId = req.params.userId;
@@ -109,9 +69,27 @@ app.get('/users/:userId/workouts', verifyTokenMiddleware, async (req, res) => {
     }
 });
 
+app.post('/users/:userId/workouts', verifyTokenMiddleware, async (req, res) => {
 
+    const userId = req.params.userId;
+    let workoutData;
+    try {
+        workoutData = validateWorkoutData(req.body);
+    } catch (error) {
+        console.log('Error validating workout data:', error);
+        return res.status(404).json({ message: 'Invalid workout data' });
+    }
 
+    try {
 
+        const workout = await createWorkout(userId, workoutData);
+        res.status(201).json({ message: workout });
+    } catch (error) {
+        console.log('Error creating workout:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+
+});
 
 app.listen(PORT, () => {
     console.log(`Server is running at http://localhost:${PORT}`);
