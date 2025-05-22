@@ -30,7 +30,7 @@ export async function signup(userInfo) {
         }
         else {
             return buildResponse(StatusCodes.INTERNAL_SERVER_ERROR, {
-                message: 'Could not retrieve user'
+                message: 'Error creating user. Please try again later.'
             });
         }
     }

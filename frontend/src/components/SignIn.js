@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { setUserLoggedIn, SignInService } from '../services/Auth';
 import { useNavigate } from 'react-router-dom';
+import { useAuthContext } from '../context/AuthContext';
 
 function SignIn() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const { login } = useAuthContext();
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -15,17 +17,24 @@ function SignIn() {
             return;
         }
 
+        setLoading(true);
         try {
-            const response = await SignInService({ email, password });
-            setUserLoggedIn(response.data.message);
+            await login({ email, password });
             navigate('/');
-            console.log('Login successful:', response);
-        }
-        catch (error) {
+        } catch (error) {
             console.error('Login failed:', error);
-            alert(error.response.data.message);
+            alert(error.response?.data?.message || 'Login failed');
         }
+
     };
+
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center h-screen w-screen bg-gray-900 text-white text-xl">
+                Logging in...
+            </div>
+        );
+    }
 
     return (
         <div className="flex justify-center items-center h-screen w-screen bg-gray-900">
