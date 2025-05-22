@@ -61,3 +61,12 @@ export function validateWorkoutData(workoutData) {
         weight: parseFloat(weight),
     };
 }
+
+export function handleDatabaseError(error, res) {
+
+    if (/^P10(0[0-9]|1[0-7])$/.test(error.code)) {
+        console.log('Database access/setup error:', error);
+    }
+
+    return res.status(500).json({ message: 'Internal server error' });
+}

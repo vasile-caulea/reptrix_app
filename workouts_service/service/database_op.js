@@ -1,6 +1,4 @@
-import { PrismaClient } from "../generated/prisma/index.js";
-
-const prismaC = new PrismaClient();
+import { prismaC } from "../prisma.js";
 
 
 export async function getWorkouts(userId, query) {
