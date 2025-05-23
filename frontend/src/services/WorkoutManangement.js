@@ -20,6 +20,16 @@ export async function getAllExercises() {
     }
 }
 
+export async function getAllExerciseCategories() {
+    const response = await axios.get(`${WGER_API_URL}${WGER_API_VERSION}/exercisecategory`);
+    if (response.status === 200) {
+        return response.data.results;
+    }
+    else {
+        throw new Error(response.statusText);
+    }
+}
+
 function getAuthHeaders() {
     const token = getToken();
     if (!token) {
@@ -47,10 +57,26 @@ export async function addWorkout(workout) {
     });
 }
 
-export async function getAllWorkouts() {
+export async function getAllWorkouts(filters) {
     const { userId, headers } = getAuthHeaders();
 
+    const { startDate, endDate, exercise, exerciseCategory } = filters;
+
+    const params = {}
+    if (startDate) {
+        params.startDate = startDate;
+    }
+    if (endDate) {
+        params.endDate = endDate;
+    }
+    if (exercise) {
+        params.exerciseId = exercise.id;
+    }
+    if (exerciseCategory) {
+        params.exerciseCatId = exerciseCategory.id;
+    }
+
     return axios.get(`${WORKOUT_API_URL}/users/${userId}/workouts`, {
-        headers: headers
+        headers: headers, params: params
     });
 }

@@ -33,10 +33,8 @@ function AddWorkout() {
         try {
             const response = await addWorkout({
                 date: formData.date,
-                exercise: {
-                    id: exerciseInput.id,
-                    categoryID: exerciseInput.categoryID,
-                },
+                exerciseId: exerciseInput.id,
+                categoryId: exerciseInput.categoryID,
                 repetitions: formData.repetitions,
                 sets: formData.sets,
                 weight: formData.weight
@@ -52,7 +50,7 @@ function AddWorkout() {
 
         } catch (error) {
             console.error("Error adding workout:", error);
-            alert(error.message);
+            alert("Error adding workout. Please try again.");
         }
     }
 
@@ -68,7 +66,7 @@ function AddWorkout() {
 
                 <input type="number" name="sets" onChange={handleChange} placeholder="Sets" className={inputStyleClass} required />
                 <input type="number" name="repetitions" onChange={handleChange} placeholder="Repetitions" className={inputStyleClass} required />
-                <input type="number" name="weight" onChange={handleChange} placeholder="Weight (kg)" className={inputStyleClass} />
+                <input type="number" step="0.1" name="weight" onChange={handleChange} placeholder="Weight (kg)" className={inputStyleClass} />
                 <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white rounded p-2">Add</button>
             </form>
         </section>

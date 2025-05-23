@@ -44,9 +44,5 @@ export function getUserId() {
 
 export function getUserName() {
     const firstName = localStorage.getItem('fName') || '';
-    const lastName = localStorage.getItem('lName') || '';
-    if (firstName === '' && lastName === '') {
-        return 'user';
-    }
-    return `${firstName} ${lastName}`;
+    return firstName === '' ? 'user' : firstName;
 }

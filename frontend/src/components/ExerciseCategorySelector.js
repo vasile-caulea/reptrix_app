@@ -1,9 +1,10 @@
-
 import { useEffect, useState } from "react";
-import { useExercises } from "../context/ExerciseContext";
+import { useExerciseCategories } from "../context/ExerciseCatgegoryContext";
 
-function ExerciseSelector({ onSelectExercise }) {
-    const allExercises = useExercises();
+
+function ExerciseCategorySelector({ onSelectExerciseCategory }) {
+
+    const allExercises = useExerciseCategories();
     const [exerciseInput, setExerciseInput] = useState("");
     const [suggestions, setSuggestions] = useState([]);
     const [query, setQuery] = useState("");
@@ -23,13 +24,13 @@ function ExerciseSelector({ onSelectExercise }) {
             <input
                 type="text"
                 className="p-2 rounded bg-gray-700 border border-gray-600 w-full"
-                placeholder="Search for an exercise..."
+                placeholder="Search for an exercise category..."
                 value={exerciseInput}
                 onChange={(e) => { setQuery(e.target.value); setExerciseInput(e.target.value); }}
                 required
             />
             {
-                (query && suggestions.length !== 0) && (
+                query && (
                     <ul className="absolute bg-gray-800 w-full border border-gray-600 rounded mt-1 overflow-y-auto">
                         {
                             suggestions.slice(0, 10).map((exercise) => (
@@ -38,7 +39,7 @@ function ExerciseSelector({ onSelectExercise }) {
                                     className="p-2 hover:bg-gray-600 cursor-pointer"
                                     onClick={() => {
                                         setExerciseInput(exercise[1].name);
-                                        onSelectExercise(exercise[1]);
+                                        onSelectExerciseCategory(exercise[1]);
                                         setQuery(null);
                                     }}
                                 >
@@ -53,4 +54,4 @@ function ExerciseSelector({ onSelectExercise }) {
     );
 }
 
-export default ExerciseSelector;
+export default ExerciseCategorySelector;

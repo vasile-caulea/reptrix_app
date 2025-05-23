@@ -34,7 +34,7 @@ export async function verifyTokenMiddleware(req, res, next) {
             return res.status(401).json({ message: 'Unauthorized' });
         }
 
-        return next();
+        next();
     } catch (error) {
         console.error('Error verifying token:', error.cause);
         return res.status(500).json({ message: 'Token verification failed' });

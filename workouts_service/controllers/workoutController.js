@@ -26,6 +26,7 @@ export async function createWorkoutController(req, res) {
 
     let workoutData;
     try {
+        console.log('Request body:', req.body);
         workoutData = validateWorkoutData(req.body);
     } catch (error) {
         console.error('Error validating workout data:', error);
