@@ -3,7 +3,7 @@ import { useExercises } from "../context/ExerciseContext";
 
 function Workout({ workouts }) {
     const allExercises = useExercises();
-    console.log(workouts);
+    
     return (
         <div>
             <h2 className="text-xl font-bold mb-4 text-white">Here are your Workouts</h2>

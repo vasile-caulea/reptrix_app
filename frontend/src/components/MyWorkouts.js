@@ -1,11 +1,15 @@
 import { useState, useCallback } from "react";
-import Workout from "./Workout";
-import WorkoutStatistics from "./WorkoutsStatitics";
+import WorkoutStatistics from "./WorkoutsStatistics";
 import { getAllWorkouts } from "../services/WorkoutManangement";
 import ExerciseSelector from "./ExerciseSelector";
 import ExerciseCategorySelector from "./ExerciseCategorySelector";
+import { useAuthContext } from "../context/AuthContext";
 
 function MyWorkouts() {
+
+    const [isFetching, setIsFetching] = useState(false);
+    const { logout } = useAuthContext();
+
     const [filters, setFilters] = useState({
         allTime: false,
         dateRange: { startDate: "", endDate: "" },
@@ -17,12 +21,10 @@ function MyWorkouts() {
     const [state, setState] = useState({
         workouts: [],
         dataLoaded: false,
-        onlyOneDate: false,
     });
 
     const handleDateChange = (e) => {
         const { name, value } = e.target;
-        console.log(value);
         setFilters((prev) => ({
             ...prev,
             dateRange: { ...prev.dateRange, [name]: value },
@@ -37,7 +39,7 @@ function MyWorkouts() {
             exercise: null,
             category: null,
         });
-        setState({ workouts: [], dataLoaded: false, onlyOneDate: false });
+        setState({ workouts: [], dataLoaded: false });
     };
 
     const handleFilter = useCallback(async () => {
@@ -45,25 +47,17 @@ function MyWorkouts() {
         const { allTime, dateRange, type, exercise, category } = filters;
         const { startDate, endDate } = dateRange;
 
-        if (!allTime && !startDate) {
-            alert("Please select a date range.");
+        if (!allTime && (!startDate || !endDate)) {
+            alert("Please select both start and end dates.");
             return;
         }
 
         try {
-            const isSingleDate = startDate === endDate;
-            const isInvalidRange = startDate > endDate;
 
-            if (!allTime && !isSingleDate && isInvalidRange) {
+            if (!allTime && startDate > endDate) {
                 alert("Start date cannot be later than end date.");
                 return;
             }
-
-            // alert(
-            //     allTime
-            //         ? "Showing all time statistics."
-            //         : `Showing statistics from ${startDate} to ${endDate}`
-            // );
 
             const params = {
                 startDate,
@@ -75,16 +69,22 @@ function MyWorkouts() {
             } else {
                 params.exerciseCategory = category;
             }
-
+            setIsFetching(true);
             const allData = await getAllWorkouts(params);
             setState({
                 workouts: allData.data,
-                dataLoaded: true,
-                onlyOneDate: isSingleDate,
+                dataLoaded: true
             });
+            setIsFetching(false);
         } catch (err) {
+            setIsFetching(false);
+            if (err.response.status === 401) {
+                alert("Session expired. Please log in again.");
+                await logout();
+                return;
+            }
             console.error("Error fetching workout data:", err);
-            alert("Error fetching workout data. Please try again.");
+            alert("Something went wrong... Please try again.");
         }
     }, [filters]);
 
@@ -94,16 +94,12 @@ function MyWorkouts() {
         if (state.workouts.length === 0) {
             return <p className="text-white">No workouts found for the selected filters.</p>;
         }
-        return state.onlyOneDate ? (
-            <Workout workouts={state.workouts} />
-        ) : (
-            <WorkoutStatistics workouts={state.workouts} />
-        );
+        return <WorkoutStatistics workouts={state.workouts} />
     };
 
     return (
         <section className="bg-gray-800 p-6 rounded-xl shadow-xl mb-8">
-            <h2 className="text-xl font-bold mb-6 text-white">Here are your Workouts</h2>
+            <h2 className="text-xl font-bold mb-6 text-white">Here are your workout statistics &#128200;</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-6">
 
@@ -141,7 +137,7 @@ function MyWorkouts() {
                     <select
                         value={filters.type}
                         onChange={(e) => setFilters({ ...filters, type: e.target.value })}
-                        className="p-2 rounded border border-gray-600 bg-gray-800 text-white"
+                        className="bg-gray-800 p-2 rounded border border-gray-600 text-white"
                     >
                         <option value="exercise">Exercise</option>
                         <option value="exerciseCategory">Exercise Category</option>
@@ -183,7 +179,7 @@ function MyWorkouts() {
                 </button>
             </div>
 
-            {renderResults()}
+            {isFetching ? <div>Fetching data...</div> : renderResults()}
         </section>
     );
 }

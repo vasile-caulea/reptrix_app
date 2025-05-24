@@ -12,6 +12,9 @@ function ExerciseCategorySelector({ onSelectExerciseCategory }) {
     useEffect(() => {
         if (!query) {
             setSuggestions([]);
+            if (!exerciseInput) {
+                onSelectExerciseCategory(null);
+            }
             return;
         }
         const lowerQuery = query.toLowerCase();

@@ -12,7 +12,6 @@ function useAuth() {
     const login = async ({ email, password }) => {
         try {
             const response = await SignInService({ email, password });
-            console.log("Login response:", response);
             setUserLoggedIn(response.data);
             setAuthed(true);
             return { success: true };
