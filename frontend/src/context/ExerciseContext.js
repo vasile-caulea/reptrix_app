@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect, useContext } from "react";
-import { getAllExercises } from "../services/WorkoutManangement";
+import { getAllExercises } from "../services/WorkoutManagement";
 
 const ExerciseContext = createContext(null);
 

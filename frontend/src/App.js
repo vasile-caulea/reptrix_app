@@ -1,6 +1,6 @@
 import { BrowserRouter } from "react-router-dom";
 import { Routes, Route } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import axios from "axios";
 
 import Layout from "./components/Layout";
@@ -15,10 +15,10 @@ import RedirectIfAuth from "./guards/RedirectIfAuth";
 import { ExerciseCategoryProvider } from "./context/ExerciseCatgegoryContext";
 import { useAuthContext } from "./context/AuthContext";
 import { IDM_API_URL, VERIFY_PATH } from "./Constants";
+import WorkoutCalendar from "./components/WorkoutCalendar";
 
 function App() {
 
-  const [isAuthenticating, setIsAuthenticating] = useState(true);
   const { logout } = useAuthContext();
 
   useEffect(() => {
@@ -32,21 +32,15 @@ function App() {
 
         try {
           await axios.post(`${IDM_API_URL}/${VERIFY_PATH}`, bodyRequest);
-          setIsAuthenticating(false);
         } catch (error) {
           console.error("Token verification failed:", error);
+          alert("Your session has expired. Please log in again.");
           await logout();
-          setIsAuthenticating(false);
         }
       }
     };
     verifyToken();
-  }, []);
-
-  // const token = localStorage.getItem("token");
-  // if (token && isAuthenticating) {
-  //   return <div className="flex justify-center items-center h-screen w-screen bg-gray-900 text-white text-xl">Authenticating...</div>;
-  // }
+  }, [logout]);
 
   return (
     <BrowserRouter>
@@ -64,6 +58,7 @@ function App() {
               <MyWorkouts />
             </ExerciseCategoryProvider>
           } />
+          <Route path="/workout-calendar" element={<WorkoutCalendar />} />
         </Route>
         <Route path="/login" element={
           <RedirectIfAuth>

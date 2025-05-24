@@ -1,9 +1,9 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import AddWorkout from "./AddWorkout";
 import WorkoutStatistics from "./WorkoutsStatistics";
 import { getUserName } from "../services/Auth";
-import { getAllWorkouts } from "../services/WorkoutManangement";
+import { getAllWorkouts } from "../services/WorkoutManagement";
 import { getWeekStartAndEnd } from "../services/Utils";
 import { useAuthContext } from "../context/AuthContext";
 

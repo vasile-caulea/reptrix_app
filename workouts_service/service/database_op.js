@@ -30,6 +30,28 @@ export async function getWorkouts(userId, query) {
     });
 }
 
+export async function getWorkoutDates(userId, query) {
+    const startDate = new Date(query.year, query.month - 1, 1);
+    const endDate = new Date(query.year, query.month, 0);
+
+    const filters = {
+        userID: userId,
+        date: {
+            gte: startDate,
+            lte: endDate,
+        },
+    }
+
+    return prismaC.workout.findMany({
+        where: filters,
+        distinct: ['date'],
+        select: {
+            date: true,
+        },
+    });
+}
+
+
 export async function createWorkout(userId, workoutData) {
     const { date, exerciseId, categoryId, repetitions, sets, weight } = workoutData;
 

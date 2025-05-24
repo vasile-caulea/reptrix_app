@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import WorkoutStatistics from "./WorkoutsStatistics";
-import { getAllWorkouts } from "../services/WorkoutManangement";
+import { getAllWorkouts } from "../services/WorkoutManagement";
 import ExerciseSelector from "./ExerciseSelector";
 import ExerciseCategorySelector from "./ExerciseCategorySelector";
 import { useAuthContext } from "../context/AuthContext";

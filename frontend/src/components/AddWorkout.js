@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import ExerciseSelector from "./ExerciseSelector";
-import { addWorkout } from "../services/WorkoutManangement";
+import { addWorkout } from "../services/WorkoutManagement";
 
 function AddWorkout() {
 

@@ -1,0 +1,153 @@
+import { useState, useEffect } from "react";
+import { getWorkoutsForMonth, getAllWorkouts } from "../services/WorkoutManagement";
+import { daysOfWeek, getFormattedDate, monthNames, getDaysInMonth, getFirstDayOfMonth } from "../services/Utils";
+import WorkoutExercises from "./WorkoutExercises";
+
+const WorkoutCalendar = () => {
+    const today = new Date();
+    const [year, setYear] = useState(today.getFullYear());
+    const [month, setMonth] = useState(today.getMonth());
+    const [workoutDates, setWorkoutDates] = useState([]);
+    const [selectedDate, setSelectedDate] = useState(null);
+    const [exercisesForDay, setExercisesForDay] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [isNextMonthDisabled, setIsNextMonthDisabled] = useState(today.getMonth() === month);
+
+    useEffect(() => {
+        async function fetchWorkoutDates() {
+            setLoading(true);
+            try {
+                const dates = await getWorkoutsForMonth(year, month + 1);
+                setWorkoutDates(dates.data.map(date => date.date.split('T')[0]));
+            } catch (err) {
+                console.error("Error fetching workout dates:", err);
+            } finally {
+                setLoading(false);
+                setSelectedDate(null);
+                setExercisesForDay([]);
+            }
+        }
+        fetchWorkoutDates();
+    }, [year, month]);
+
+    const calendarCells = [];
+    for (let i = 0; i < getFirstDayOfMonth(year, month); i++) {
+        calendarCells.push(<div key={`empty-${i}`} className="text-white"> </div>);
+    }
+
+    for (let day = 1; day <= getDaysInMonth(year, month); day++) {
+        const dateStr = getFormattedDate(year, month, day);
+        const hasWorkout = workoutDates.includes(dateStr);
+        calendarCells.push(
+            <div
+                key={day}
+                disabled={hasWorkout}
+                className={`p-2 text-center rounded 
+                    ${hasWorkout ? "bg-blue-600 cursor-pointer hover:bg-blue-500" : "bg-gray-700 cursor-default"} ${selectedDate === dateStr ? "ring-2 ring-blue-400" : ""}`}
+                onClick={() => { if (!hasWorkout) return; handleDayClick(day); }}
+            >
+                {day}
+            </div>
+        );
+    }
+
+    const handlePrevMonth = () => {
+        setIsNextMonthDisabled(false);
+        setMonth((prev) => (prev === 0 ? 11 : prev - 1));
+        if (month === 0) setYear((y) => y - 1);
+    };
+
+    const handleNextMonth = () => {
+        setMonth((prev) => (prev === 11 ? 0 : prev + 1));
+        if (month >= today.getMonth() - 1 && year >= today.getFullYear()) {
+            setIsNextMonthDisabled(true);
+        }
+        if (month === 11) setYear((y) => y + 1);
+    };
+
+    const handleMonthChange = (value) => {
+        if (value > today.getMonth() && year === today.getFullYear()) return;
+        setMonth(value);
+    }
+
+    const handleYearChange = (value) => {
+        if (value === today.getFullYear() && month > today.getMonth()) {
+            setMonth(today.getMonth());
+        }
+        setYear(value);
+    }
+
+    const handleDayClick = async (day) => {
+        setExercisesForDay([]);
+        const formatted = getFormattedDate(year, month, day);
+        setSelectedDate(formatted);
+        try {
+            setLoading(true);
+            const data = await getAllWorkouts({ startDate: formatted });
+            setExercisesForDay(data.data);
+        } catch (err) {
+            console.error("Error fetching exercises:", err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className="bg-gray-800 p-6 rounded-xl shadow-xl">
+
+            {/* Calendar */}
+            <div className="flex flex-col items-center mb-6 w-full">
+                <div className="flex items-center justify-between mb-4 w-1/2">
+                    <button onClick={handlePrevMonth} className="text-white bg-gray-700 pt-1 pb-1 pl-4 pr-4 rounded hover:bg-blue-500">Prev</button>
+
+                    <div className="text-white font-bold">
+                        <select
+                            className="bg-gray-700 text-white p-1 rounded mr-2"
+                            value={month}
+                            onChange={(e) => handleMonthChange(Number(e.target.value))}
+                        >
+                            {monthNames.map((name, idx) => (
+                                <option key={idx} value={idx}>{name}</option>
+                            ))}
+                        </select>
+
+                        <input type="number" className="bg-gray-700 text-white p-1 rounded outline-none"
+                            value={year} max={today.getFullYear()} min={2023}
+                            onChange={(e) => handleYearChange(Number(e.target.value))}>
+                        </input>
+                    </div>
+
+                    <button onClick={handleNextMonth} className="text-white bg-gray-700 pt-1 pb-1 pl-4 pr-4 rounded hover:bg-blue-500 disabled:bg-gray-400" disabled={isNextMonthDisabled}>Next</button>
+                </div>
+
+                <div className="grid grid-cols-7 gap-2 mb-2 text-white font-semibold text-center w-1/2">
+                    {daysOfWeek.map((day) => (
+                        <div key={day}>{day}</div>
+                    ))}
+                </div>
+
+                <div className="grid grid-cols-7 gap-2 w-1/2">
+                    {calendarCells}
+                </div>
+            </div>
+
+            {loading ? (<p className="text-white mt-4">Loading...</p>) : (
+                selectedDate && (
+                    <div className="mt-6 text-white">
+                        <h1 className="font-bold mb-2 text-xl">Exercises on {selectedDate}</h1>
+                        {
+                            exercisesForDay.length > 0 ? (
+                                <WorkoutExercises workouts={exercisesForDay} />
+                            ) : (
+                                <p>No exercises found for this day.</p>
+                            )
+                        }
+                    </div>
+                )
+            )
+            }
+        </div>
+    );
+};
+
+export default WorkoutCalendar;

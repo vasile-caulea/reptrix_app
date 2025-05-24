@@ -80,3 +80,15 @@ export async function getAllWorkouts(filters) {
         headers: headers, params: params
     });
 }
+
+export async function getWorkoutsForMonth(year, month) {
+    const { userId, headers } = getAuthHeaders();
+
+    const params = {
+        year: year,
+        month: month
+    }
+    return axios.get(`${WORKOUT_API_URL}/users/${userId}/workouts/dates`, {
+        headers: headers, params: params
+    });
+}
