@@ -26,7 +26,7 @@ function ExerciseCategorySelector({ onSelectExerciseCategory }) {
         <div className="relative w-full">
             <input
                 type="text"
-                className="p-2 rounded bg-gray-700 border border-gray-600 w-full"
+                className="p-2 rounded bg-gray-800 bg-gray-700 border border-gray-600 w-full"
                 placeholder="Search for an exercise category..."
                 value={exerciseInput}
                 onChange={(e) => { setQuery(e.target.value); setExerciseInput(e.target.value); }}

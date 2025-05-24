@@ -93,45 +93,41 @@ const WorkoutCalendar = () => {
     };
 
     return (
-        <div className="bg-gray-800 p-6 rounded-xl shadow-xl">
+        <div className="bg-gray-900 p-6 rounded-2xl shadow-2xl max-w-2xl mx-auto">
+            <h2 className="text-white text-2xl font-bold text-center mb-4">
+                {monthNames[month]} {year}
+            </h2>
 
-            {/* Calendar */}
-            <div className="flex flex-col items-center mb-6 w-full">
-                <div className="flex items-center justify-between mb-4 w-1/2">
-                    <button onClick={handlePrevMonth} className="text-white bg-gray-700 pt-1 pb-1 pl-4 pr-4 rounded hover:bg-blue-500">Prev</button>
+            <div className="flex justify-between items-center mb-4 gap-4">
+                <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded" onClick={handlePrevMonth}>Prev</button>
 
-                    <div className="text-white font-bold">
-                        <select
-                            className="bg-gray-700 text-white p-1 rounded mr-2"
-                            value={month}
-                            onChange={(e) => handleMonthChange(Number(e.target.value))}
-                        >
-                            {monthNames.map((name, idx) => (
-                                <option key={idx} value={idx}>{name}</option>
-                            ))}
-                        </select>
+                <div className="flex items-center space-x-2">
+                    <select className="bg-gray-800 text-white p-2 rounded" value={month} onChange={(e) => handleMonthChange(e.target.value)}>
+                        {monthNames.map((name, idx) => (
+                            <option key={idx} value={idx}>{name}</option>
+                        ))}
+                    </select>
 
-                        <input type="number" className="bg-gray-700 text-white p-1 rounded outline-none"
-                            value={year} max={today.getFullYear()} min={2023}
-                            onChange={(e) => handleYearChange(Number(e.target.value))}>
-                        </input>
-                    </div>
-
-                    <button onClick={handleNextMonth} className="text-white bg-gray-700 pt-1 pb-1 pl-4 pr-4 rounded hover:bg-blue-500 disabled:bg-gray-400" disabled={isNextMonthDisabled}>Next</button>
+                    <input type="number" className="bg-gray-800 text-white p-2 rounded w-20" value={year} onChange={(e) => handleYearChange(e.target.value)} />
                 </div>
 
-                <div className="grid grid-cols-7 gap-2 mb-2 text-white font-semibold text-center w-1/2">
-                    {daysOfWeek.map((day) => (
-                        <div key={day}>{day}</div>
-                    ))}
-                </div>
-
-                <div className="grid grid-cols-7 gap-2 w-1/2">
-                    {calendarCells}
-                </div>
+                <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded disabled:bg-gray-500" disabled={isNextMonthDisabled}
+                    onClick={handleNextMonth}>Next</button>
             </div>
 
-            {loading ? (<p className="text-white mt-4">Loading...</p>) : (
+            <div className="grid grid-cols-7 gap-2 text-white text-sm font-semibold text-center mb-2">
+                {daysOfWeek.map((day, idx) => (
+                    <div key={day} className={`${idx === 0 || idx === 6 ? "text-lime-400" : ""}`}>{day}</div>
+                ))}
+            </div>
+
+            <div className="grid grid-cols-7 gap-2">
+                {calendarCells}
+            </div>
+
+            {loading ? (
+                <p className="text-white mt-4">Loading...</p>
+            ) : (
                 selectedDate && (
                     <div className="mt-6 text-white">
                         <h1 className="font-bold mb-2 text-xl">Exercises on {selectedDate}</h1>
@@ -144,8 +140,7 @@ const WorkoutCalendar = () => {
                         }
                     </div>
                 )
-            )
-            }
+            )}
         </div>
     );
 };
