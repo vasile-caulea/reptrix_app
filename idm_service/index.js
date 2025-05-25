@@ -1,8 +1,9 @@
-
 import express from 'express';
 import { signup } from './service/register.js';
 import { signin } from './service/signin.js';
 import { verify } from './service/verify.js';
+import { getUser, updateUser } from './service/profile.js';
+import {authenticateToken} from './middleware/authMiddleware.js';
 import cors from 'cors';
 
 const app = express();
@@ -27,10 +28,10 @@ app.post('/signin', async (req, res) => {
         const response = await signin(reqBody);
         res.status(response.statusCode).send(response.body);
     } catch (error) {
+        console.log(error);
         res.status(500).send({ message: 'Internal server error' });
     }
 });
-
 
 app.post('/verify', async (req, res) => {
     console.log('Request Body:', req.body);
@@ -39,7 +40,25 @@ app.post('/verify', async (req, res) => {
     res.status(response.statusCode).send(response.body);
 });
 
-
-app.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`);
+app.get('/users/:userId',  authenticateToken, async (req, res) => {
+    const userId = req.params.userId;
+    try {
+        const response = await getUser(userId);
+        res.status(response.statusCode).send(response.body);
+    } catch (error) {
+        res.status(500).send({ message: 'Internal server error' });
+    }
 });
+
+app.patch('/users/:userId', authenticateToken, async (req, res) => {
+    const userId = req.params.userId;
+    try {
+        const response = await updateUser(userId, req.body);
+        res.status(response.statusCode).send(response.body);
+    } catch (error) {
+        res.status(500).send({ message: 'Internal server error' });
+    }
+});
+
+import serverlessExpress from '@vendia/serverless-express';
+export const handler = serverlessExpress({ app });

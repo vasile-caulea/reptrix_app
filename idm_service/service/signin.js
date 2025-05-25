@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 
 import { buildResponse } from '../utils/utils.js';
 import { generateToken } from '../utils/auth.js';
-import { getUser } from '../utils/database_op.js';
+import { getUserByEmail } from '../utils/database_op.js';
 
 export async function signin(user) {
     const email = user.email;
@@ -17,7 +17,7 @@ export async function signin(user) {
 
     let userDB;
     try {
-        userDB = await getUser(email.trim());
+        userDB = await getUserByEmail(email.trim());
     }
     catch (error) {
         if (error['$metadata'] && error['$metadata'].httpStatusCode === 404) {

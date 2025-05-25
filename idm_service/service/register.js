@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import { StatusCodes } from 'http-status-codes';
 
 import { buildResponse } from '../utils/utils.js';
-import { getUser, saveUser } from '../utils/database_op.js';
+import { getUserByEmail, saveUser } from '../utils/database_op.js';
 
 export async function signup(userInfo) {
 
@@ -20,7 +20,7 @@ export async function signup(userInfo) {
 
     let userDB;
     try {
-        userDB = await getUser(email.trim());
+        userDB = await getUserByEmail(email.trim());
     }
     catch (error) {
         if (error['$metadata'] && error['$metadata'].httpStatusCode === 404) {
@@ -48,6 +48,7 @@ export async function signup(userInfo) {
         password: hashedPassword,
         firstName: firstName.trim(),
         lastName: lastName.trim(),
+        createdAt: new Date().toISOString()
     }
 
     const saveUserResponse = await saveUser(user);
