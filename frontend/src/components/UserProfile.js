@@ -78,11 +78,17 @@ function UserProfile() {
         if (!confirmed) return;
 
         try {
-            // const res = await deleteUserAccount();
+            toast.loading("Deleting account...");
+            const res = await deleteUserAccount();
             toast.success("Account deleted");
-            localStorage.removeItem("token");
-            window.location.href = "/login";
+            toast.dismiss();
+            toast.success("Account deleted successfully. You will be redirected to the login page.");
+            setTimeout(() => {
+                localStorage.removeItem("token");
+                window.location.href = "/login";
+            }, 1000);
         } catch (err) {
+            toast.dismiss();
             toast.error("Failed to delete account");
         }
     };
@@ -180,9 +186,10 @@ function UserProfile() {
                         <p>{user.email}</p>
                     )}
                 </div>
+                <p><span className="block text-sm text-gray-400">Created on:</span> {user && user.createdAt.split('T')[0]}</p>
             </div>
 
-            <div className="mt-6 flex justify-between">
+            <div className="mt-6 flex gap-2">
                 {isEditing ? (
                     <>
                         <button
@@ -202,7 +209,7 @@ function UserProfile() {
                     <>
                         <button
                             onClick={() => setIsEditing(true)}
-                            className="bg-yellow-600 hover:bg-yellow-500 px-4 py-2 rounded"
+                            className="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded"
                         >
                             Edit Profile
                         </button>
@@ -241,9 +248,9 @@ function UserProfile() {
                         />
                         <button
                             onClick={handlePasswordChange}
-                            className="bg-yellow-600 hover:bg-yellow-500 px-4 py-2 rounded mr-2"
+                            className="bg-green-600 hover:bg-green-500 px-4 py-2 rounded mr-2"
                         >
-                            Change Password
+                            Save Password
                         </button>
                         <button
                             onClick={() => { setIsEditingPassword(false) }}
