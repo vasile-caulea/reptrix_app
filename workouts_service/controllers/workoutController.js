@@ -64,7 +64,7 @@ export async function createWorkoutController(req, res) {
 
     try {
         const workout = await createWorkout(userId, workoutData);
-        res.status(201).json({ message: workout });
+        res.status(201).json(workout);
     } catch (error) {
         if (error instanceof PrismaClientKnownRequestError) {
             return handleDatabaseError(error, res);

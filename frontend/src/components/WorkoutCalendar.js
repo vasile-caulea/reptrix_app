@@ -115,28 +115,31 @@ const WorkoutCalendar = () => {
         );
     }
 
-    const ldeleteWorkout = (workoutId) => {
+    const ldeleteWorkout = async (workoutId) => {
         const confirmed = window.confirm("Are you sure you want to delete this workout?");
-        if (confirmed) {
-            toast.promise(
-                deleteWorkout(workoutId),
-                {
-                    loading: "Deleting workout...",
-                    success: () => {
-                        setExercisesForDay(prev => prev.filter(w => w.id !== workoutId));
-                        if (exercisesForDay.length === 0) {
-                            setSelectedDate(null);
-                        }
-                        return "Workout deleted successfully!";
-                    },
-                    error: (error) => {
-                        console.error("Error deleting workout:", error);
-                        return "Failed to delete workout. Please try again.";
-                    }
-                }
-            );
+        if (!confirmed) return;
+
+        const toastId = toast.loading("Deleting workout...");
+
+        try {
+            await deleteWorkout(workoutId);
+
+            const workoutDate = exercisesForDay.find(w => w.id === workoutId)?.date;
+            const filteredExercises = exercisesForDay.filter(w => w.id !== workoutId);
+            setExercisesForDay(filteredExercises);
+
+            if (filteredExercises.length === 0) {
+                setSelectedDate(null);
+                const filteredDates = workoutDates.filter(date => !workoutDate.includes(date));
+                setWorkoutDates(filteredDates);
+            }
+
+            toast.success("Workout deleted successfully!", { id: toastId });
+        } catch (error) {
+            console.error("Error deleting workout:", error);
+            toast.error("Failed to delete workout. Please try again.", { id: toastId });
         }
-    }
+    };
 
     return (
         <div className="bg-gray-900 p-6 rounded-2xl shadow-2xl max-w-2xl mx-auto">

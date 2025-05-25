@@ -1,7 +1,9 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 import ExerciseSelector from "./ExerciseSelector";
-import { addWorkout } from "../services/WorkoutManagement";
+import { addWorkout, updateWorkout, deleteWorkout } from "../services/WorkoutManagement";
+import WorkoutExercises from "./WorkoutExercises";
 
 function AddWorkout() {
 
@@ -14,24 +16,27 @@ function AddWorkout() {
         weight: null
     });
 
+    const [workouts, setWorkouts] = useState([]);
+
     const handleChange = ({ target }) => setFormData({ ...formData, [target.name]: target.value });
 
     const handleAddWorkout = async (e) => {
         e.preventDefault();
-        console.log(exerciseInput);
 
         if (!exerciseInput) {
-            alert("Please select an exercise.");
+            toast.error("Please select an exercise.");
             return;
         }
 
         if (!formData.date || !formData.repetitions || !formData.sets) {
-            alert("Please fill in all required fields.");
+            toast.error("Please fill in all required fields.");
             return;
         }
 
         try {
-            const response = await addWorkout({
+            toast.loading("Adding workout...");
+
+            const result = await addWorkout({
                 date: formData.date,
                 exerciseId: exerciseInput.id,
                 categoryId: exerciseInput.categoryID,
@@ -39,20 +44,55 @@ function AddWorkout() {
                 sets: formData.sets,
                 weight: formData.weight
             });
+            setWorkouts(prev => [...prev, result.data]);
 
-            if (response.status === 201) {
-                console.log("Workout added successfully:", response.data);
-                alert("Workout added successfully!");
-            } else {
-                console.error("Error adding workout:", response.statusText);
-                alert("Error adding workout. Please try again.");
-            }
-
+            toast.dismiss();
+            toast.success("Workout added successfully!");
         } catch (error) {
+            if (error.response && error.response.status === 401) {
+                window.location.href = "/login";
+                return;
+            }
+            toast.dismiss();
             console.error("Error adding workout:", error);
-            alert("Error adding workout. Please try again.");
+            toast.error("Error adding workout. Please try again.");
         }
     }
+
+    const lUpdateWorkout = (workoutId, updatedData) => {
+        toast.promise(
+            updateWorkout(workoutId, updatedData),
+            {
+                loading: "Updating workout...",
+                success: () => {
+                    toast.success("Workout updated successfully!");
+                    setWorkouts(prev =>
+                        prev.map(w => w.id === workoutId ? { ...w, ...updatedData } : w)
+                    );
+                },
+                error: (error) => {
+                    console.error("Error updating workout:", error);
+                    return "Failed to update workout. Please try again.";
+                }
+            }
+        );
+    }
+
+    const ldeleteWorkout = async (workoutId) => {
+        const confirmed = window.confirm("Are you sure you want to delete this workout?");
+        if (!confirmed) return;
+
+        const toastId = toast.loading("Deleting workout...");
+
+        try {
+            await deleteWorkout(workoutId);
+            setWorkouts(prev => prev.filter(w => w.id !== workoutId));
+            toast.success("Workout deleted successfully!", { id: toastId });
+        } catch (error) {
+            console.error("Error deleting workout:", error);
+            toast.error("Failed to delete workout. Please try again.", { id: toastId });
+        }
+    };
 
     const inputStyleClass = "p-2 rounded bg-gray-700 border border-gray-600";
 
@@ -69,6 +109,13 @@ function AddWorkout() {
                 <input type="number" step="0.1" name="weight" onChange={handleChange} placeholder="Weight (kg)" className={inputStyleClass} />
                 <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white rounded p-2">Add</button>
             </form>
+            {
+                workouts.length > 0 && (
+                    <div className="mt-6 text-white">
+                        <WorkoutExercises workouts={workouts} updateWorkout={lUpdateWorkout} deleteWorkout={ldeleteWorkout} />
+                    </div>
+                )
+            }
         </section>
     );
 }

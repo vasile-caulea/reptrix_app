@@ -34,7 +34,7 @@ function ExerciseCategorySelector({ onSelectExerciseCategory }) {
             />
             {
                 query && (
-                    <ul className="absolute bg-gray-800 w-full border border-gray-600 rounded mt-1 overflow-y-auto">
+                    <ul className="absolute bg-gray-800 w-full border border-gray-600 rounded mt-1 overflow-y-auto z-10">
                         {
                             suggestions.slice(0, 10).map((exercise) => (
                                 <li

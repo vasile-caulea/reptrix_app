@@ -44,6 +44,7 @@ function WorkoutExercises({ workouts, updateWorkout, deleteWorkout }) {
 
             <div className="grid grid-cols-1 gap-4">
                 {Array.isArray(workouts) && workouts.map((workout, index) => (
+                    workout &&
                     <div key={index} className="bg-gray-800 p-4 rounded-lg shadow-md relative">
                         <h3 className="text-lg font-semibold text-white">{allExercises[workout.exerciseID]?.name}</h3>
                         <p className="text-gray-400">Repetitions: {workout.repetitions}</p>

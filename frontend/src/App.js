@@ -45,7 +45,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Toaster position="top-right" reverseOrder={false} />
+      <Toaster reverseOrder={false} />
       <Routes>
         <Route path="/" element={
           <RequireAuth>

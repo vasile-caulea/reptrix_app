@@ -1,39 +1,40 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../context/AuthContext';
+import toast from 'react-hot-toast';
 
 function SignIn() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const { login } = useAuthContext();
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        toast.loading('Logging in...');
 
         if (!email || !password) {
-            alert('Please fill in all fields');
+            toast((t) =>
+                <span>Please fill in all fields
+                    <button onClick={() => toast.dismiss(t.id)} className="ml-2 text-blue-500">Dismiss</button>
+                </span>
+            );
             return;
         }
 
-        setLoading(true);
         try {
             await login({ email, password });
+            toast.dismiss();
             navigate('/');
         } catch (error) {
             console.error('Login failed:', error);
-            alert(error.response?.data?.message || 'Login failed');
+            toast.dismiss();
+            toast.error((t) =>
+                <span>{error.response?.data?.message || 'Login failed'}
+                    <button onClick={() => toast.dismiss(t.id)} className="ml-2 text-blue-500">Close</button>
+                </span>
+            );
         }
-
-    };
-
-    if (loading) {
-        return (
-            <div className="flex justify-center items-center h-screen w-screen bg-gray-900 text-white text-xl">
-                Logging in...
-            </div>
-        );
     }
 
     return (
