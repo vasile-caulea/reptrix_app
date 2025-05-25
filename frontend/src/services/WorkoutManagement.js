@@ -1,26 +1,8 @@
 import axios from 'axios';
 import { WGER_API_URL, WGER_API_VERSION, WGER_API_EXERCISE_INFO_PATH, WGER_API_LANGUAGE_ENGLISH } from '../Constants';
 import { WORKOUT_API_URL } from '../Constants';
-import { getToken } from './Auth';
+import { getAuthHeaders } from './Utils';
 
-function getAuthHeaders() {
-    const token = getToken();
-    if (!token) {
-        throw new Error('You must be logged in.');
-    }
-
-    const userId = localStorage.getItem('userId');
-    if (!userId) {
-        throw new Error('User ID not found.');
-    }
-
-    return {
-        userId,
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    };
-}
 
 export async function getAllExercises() {
     const response = await axios.get(`${WGER_API_URL}${WGER_API_VERSION}/${WGER_API_EXERCISE_INFO_PATH}?language=${WGER_API_LANGUAGE_ENGLISH}&limit=1000`);

@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { SignUpService } from '../services/Auth';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 function SignUp() {
     const [email, setEmail] = useState('');
@@ -19,20 +20,29 @@ function SignUp() {
             return;
         }
 
+        if (password.length < 6) {
+            alert('Password must be at least 6 characters long');
+            return;
+        }
+
         if (password !== confirmPassword) {
             alert('Passwords do not match');
             return;
         }
 
         try {
+            toast.loading('Creating account...');
             const response = await SignUpService({ email, password, fname, lname });
             console.log('Login successful:', response);
-            alert('Account created successfully! Please login.');
-            navigate('/login');
+            toast.dismiss();
+            toast.success('Account created successfully! Please login.');
+            setTimeout(() => {
+                navigate('/login');
+            }, 500);
         }
         catch (error) {
             console.error('SignUp failed:', error);
-            alert(error.response.data.message);
+            toast.error(error.response.data.message);
         }
     };
 

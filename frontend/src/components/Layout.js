@@ -23,6 +23,7 @@ function Layout() {
                         <Link to="/add-workout" className={hoverStyleClass}>&#10133; Add Workout</Link>
                         <Link to="/workout-calendar" className={hoverStyleClass}>&#128197; Calendar</Link>
                         <Link to="/workout-statistics" className={hoverStyleClass}>&#128202; Statistics</Link>
+                        <Link to="/profile" className={hoverStyleClass}>&#128100; Profile</Link>
                     </nav>
                 </div>
                 <div className="mt-6">

@@ -1,3 +1,4 @@
+import { getToken } from "./Auth";
 
 export const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 export const monthNames = [
@@ -26,3 +27,22 @@ export function getFormattedDate(year, month, day) {
 
 export const getDaysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
 export const getFirstDayOfMonth = (year, month) => new Date(year, month, 1).getDay();
+
+export function getAuthHeaders() {
+    const token = getToken();
+    if (!token) {
+        throw new Error('You must be logged in.');
+    }
+
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+        throw new Error('User ID not found.');
+    }
+
+    return {
+        userId,
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    };
+}
