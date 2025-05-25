@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { getWorkoutsForMonth, getAllWorkouts } from "../services/WorkoutManagement";
+import toast from "react-hot-toast";
+import { getWorkoutsForMonth, getAllWorkouts, updateWorkout, deleteWorkout } from "../services/WorkoutManagement";
 import { daysOfWeek, getFormattedDate, monthNames, getDaysInMonth, getFirstDayOfMonth } from "../services/Utils";
 import WorkoutExercises from "./WorkoutExercises";
 
@@ -21,6 +22,9 @@ const WorkoutCalendar = () => {
                 setWorkoutDates(dates.data.map(date => date.date.split('T')[0]));
             } catch (err) {
                 console.error("Error fetching workout dates:", err);
+                if (err.response && err.response.status === 401) {
+                    window.location.href = "/login";
+                }
             } finally {
                 setLoading(false);
                 setSelectedDate(null);
@@ -92,6 +96,48 @@ const WorkoutCalendar = () => {
         }
     };
 
+    const lUpdateWorkout = (workoutId, updatedData) => {
+        toast.promise(
+            updateWorkout(workoutId, updatedData),
+            {
+                loading: "Updating workout...",
+                success: () => {
+                    toast.success("Workout updated successfully!");
+                    setExercisesForDay(prev =>
+                        prev.map(w => w.id === workoutId ? { ...w, ...updatedData } : w)
+                    );
+                },
+                error: (error) => {
+                    console.error("Error updating workout:", error);
+                    return "Failed to update workout. Please try again.";
+                }
+            }
+        );
+    }
+
+    const ldeleteWorkout = (workoutId) => {
+        const confirmed = window.confirm("Are you sure you want to delete this workout?");
+        if (confirmed) {
+            toast.promise(
+                deleteWorkout(workoutId),
+                {
+                    loading: "Deleting workout...",
+                    success: () => {
+                        setExercisesForDay(prev => prev.filter(w => w.id !== workoutId));
+                        if (exercisesForDay.length === 0) {
+                            setSelectedDate(null);
+                        }
+                        return "Workout deleted successfully!";
+                    },
+                    error: (error) => {
+                        console.error("Error deleting workout:", error);
+                        return "Failed to delete workout. Please try again.";
+                    }
+                }
+            );
+        }
+    }
+
     return (
         <div className="bg-gray-900 p-6 rounded-2xl shadow-2xl max-w-2xl mx-auto">
             <h2 className="text-white text-2xl font-bold text-center mb-4">
@@ -133,7 +179,7 @@ const WorkoutCalendar = () => {
                         <h1 className="font-bold mb-2 text-xl">Exercises on {selectedDate}</h1>
                         {
                             exercisesForDay.length > 0 ? (
-                                <WorkoutExercises workouts={exercisesForDay} />
+                                <WorkoutExercises workouts={exercisesForDay} updateWorkout={lUpdateWorkout} deleteWorkout={ldeleteWorkout} />
                             ) : (
                                 <p>No exercises found for this day.</p>
                             )

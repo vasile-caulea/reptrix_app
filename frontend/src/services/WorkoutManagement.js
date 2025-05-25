@@ -3,6 +3,25 @@ import { WGER_API_URL, WGER_API_VERSION, WGER_API_EXERCISE_INFO_PATH, WGER_API_L
 import { WORKOUT_API_URL } from '../Constants';
 import { getToken } from './Auth';
 
+function getAuthHeaders() {
+    const token = getToken();
+    if (!token) {
+        throw new Error('You must be logged in.');
+    }
+
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+        throw new Error('User ID not found.');
+    }
+
+    return {
+        userId,
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    };
+}
+
 export async function getAllExercises() {
     const response = await axios.get(`${WGER_API_URL}${WGER_API_VERSION}/${WGER_API_EXERCISE_INFO_PATH}?language=${WGER_API_LANGUAGE_ENGLISH}&limit=1000`);
     if (response.status === 200) {
@@ -30,29 +49,26 @@ export async function getAllExerciseCategories() {
     }
 }
 
-function getAuthHeaders() {
-    const token = getToken();
-    if (!token) {
-        throw new Error('You must be logged in.');
-    }
-
-    const userId = localStorage.getItem('userId');
-    if (!userId) {
-        throw new Error('User ID not found.');
-    }
-
-    return {
-        userId,
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    };
-}
-
 export async function addWorkout(workout) {
 
     const { userId, headers } = getAuthHeaders();
     return axios.post(`${WORKOUT_API_URL}/users/${userId}/workouts`, workout, {
+        headers: headers
+    });
+}
+
+export async function updateWorkout(workoutId, updatedWorkout) {
+    const { userId, headers } = getAuthHeaders();
+
+    return axios.patch(`${WORKOUT_API_URL}/users/${userId}/workouts/${workoutId}`, updatedWorkout, {
+        headers: headers
+    });
+}
+
+export async function deleteWorkout(workoutId) {
+    const { userId, headers } = getAuthHeaders();
+
+    return axios.delete(`${WORKOUT_API_URL}/users/${userId}/workouts/${workoutId}`, {
         headers: headers
     });
 }

@@ -2,6 +2,7 @@ import { BrowserRouter } from "react-router-dom";
 import { Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
 import axios from "axios";
+import { Toaster } from "react-hot-toast";
 
 import Layout from "./components/Layout";
 import Home from "./components/Home";
@@ -40,10 +41,11 @@ function App() {
       }
     };
     verifyToken();
-  }, [logout]);
+  }, []);
 
   return (
     <BrowserRouter>
+      <Toaster position="top-right" reverseOrder={false} />
       <Routes>
         <Route path="/" element={
           <RequireAuth>

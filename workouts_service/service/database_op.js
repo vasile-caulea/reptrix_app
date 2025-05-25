@@ -67,3 +67,28 @@ export async function createWorkout(userId, workoutData) {
         },
     });
 }
+
+export async function updateWorkout(userId, workoutId, updatedData) {
+    const { repetitions, sets, weight } = updatedData;
+    const dataToUpdate = {};
+    if (repetitions !== undefined) dataToUpdate.repetitions = repetitions;
+    if (sets !== undefined) dataToUpdate.sets = sets;
+    if (weight !== undefined) dataToUpdate.weight = weight;
+
+    return prismaC.workout.update({
+        where: {
+            id: workoutId,
+            userID: userId,
+        },
+        data: dataToUpdate,
+    });
+}
+
+export async function deleteWorkout(userId, workoutId) {
+    return prismaC.workout.delete({
+        where: {
+            id: workoutId,
+            userID: userId,
+        },
+    });
+}

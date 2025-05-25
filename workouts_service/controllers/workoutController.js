@@ -1,5 +1,6 @@
-import { getWorkouts, createWorkout, getWorkoutDates } from '../service/database_op.js';
-import { getValidatedQuery, validateWorkoutData, handleDatabaseError } from '../utils/utils.js';
+import { getWorkouts, createWorkout, getWorkoutDates, updateWorkout, deleteWorkout } from '../service/database_op.js';
+import { getValidatedQuery, validateWorkoutData, validateUpdateWorkoutData, handleDatabaseError } from '../utils/utils.js';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library.js';
 
 export async function getWorkoutsController(req, res) {
     const userId = req.params.userId;
@@ -69,6 +70,60 @@ export async function createWorkoutController(req, res) {
             return handleDatabaseError(error, res);
         } else {
             console.error('Error creating workout:', error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    }
+}
+
+export async function updateWorkoutController(req, res) {
+    let workoutId;
+    try {
+        workoutId = parseInt(req.params.workoutId, 10);
+    } catch (error) {
+        console.error('Error parsing workout ID:', error);
+        return res.status(400).json({ message: 'Invalid workout ID' });
+    }
+
+    let workoutData;
+    try {
+        workoutData = validateUpdateWorkoutData(req.body);
+    } catch (error) {
+        console.error('Error validating workout data:', error);
+        return res.status(400).json({ message: 'Invalid workout data' });
+    }
+
+    const userId = req.params.userId;
+    try {
+        const updatedWorkout = await updateWorkout(userId, workoutId, workoutData);
+        res.status(200).json({ message: updatedWorkout });
+    } catch (error) {
+        if (error instanceof PrismaClientKnownRequestError) {
+            return handleDatabaseError(error, res);
+        } else {
+            console.error('Error updating workout:', error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    }
+}
+
+export async function deleteWorkoutController(req, res) {
+    let workoutId;
+    try {
+        workoutId = parseInt(req.params.workoutId, 10);
+    } catch (error) {
+        console.error('Error parsing workout ID:', error);
+        return res.status(400).json({ message: 'Invalid workout ID' });
+    }
+
+    const userId = req.params.userId;
+    try {
+        await deleteWorkout(userId, workoutId);
+        res.status(204).send();
+    } catch (error) {
+        if (error instanceof PrismaClientKnownRequestError) {
+            return handleDatabaseError(error, res);
+        } else {
+            console.error('Error deleting workout:', error);
             res.status(500).json({ message: 'Internal server error' });
         }
     }

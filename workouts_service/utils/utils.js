@@ -70,3 +70,23 @@ export function handleDatabaseError(error, res) {
 
     return res.status(500).json({ message: 'Internal server error' });
 }
+
+export function validateUpdateWorkoutData(workoutData) {
+
+    const { repetitions, sets, weight } = workoutData;
+    if (!repetitions && !sets && !weight) {
+        throw new Error('At least one field (repetitions, sets, weight) must be provided for update');
+    }
+
+    const validatedData = {};
+    if (repetitions !== undefined) {
+        validatedData.repetitions = parseInt(repetitions, 10);
+    }
+    if (sets !== undefined) {
+        validatedData.sets = parseInt(sets, 10);
+    }
+    if (weight !== undefined) {
+        validatedData.weight = parseFloat(weight);
+    }
+    return validatedData;
+}
