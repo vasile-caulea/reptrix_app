@@ -77,19 +77,20 @@ function UserProfile() {
         const confirmed = window.confirm("Are you sure you want to delete your account?");
         if (!confirmed) return;
 
+        toast.loading("Submitting deletion request...");
+
         try {
-            toast.loading("Deleting account...");
             const res = await deleteUserAccount();
-            toast.success("Account deleted");
             toast.dismiss();
-            toast.success("Account deleted successfully. You will be redirected to the login page.");
             setTimeout(() => {
+                alert("Your account deletion request was submitted successfully. You will receive an email confirmation shortly. You will be logged out now.");
                 localStorage.removeItem("token");
                 window.location.href = "/login";
-            }, 1000);
+            }, 500);
         } catch (err) {
+            console.log(err);
             toast.dismiss();
-            toast.error("Failed to delete account");
+            toast.error("Failed to submit deletion request.");
         }
     };
 
