@@ -24,6 +24,7 @@ function Layout() {
                         <Link to="/workout-calendar" className={hoverStyleClass}>&#128197; Calendar</Link>
                         <Link to="/workout-statistics" className={hoverStyleClass}>&#128202; Statistics</Link>
                         <Link to="/profile" className={hoverStyleClass}>&#128100; Profile</Link>
+                        <Link to="/exercises" className={hoverStyleClass}>&#128170; Exercises</Link>
                     </nav>
                 </div>
                 <div className="mt-6">

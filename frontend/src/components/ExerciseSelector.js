@@ -35,9 +35,9 @@ function ExerciseSelector({ onSelectExercise }) {
                 (query && suggestions.length !== 0) && (
                     <ul className="absolute bg-gray-800 w-full border border-gray-600 rounded mt-1 overflow-y-auto z-10">
                         {
-                            suggestions.slice(0, 10).map((exercise) => (
+                            suggestions.slice(0, 10).map((exercise, idx) => (
                                 <li
-                                    key={exercise[0].id}
+                                    key={idx}
                                     className="p-2 hover:bg-gray-600 cursor-pointer"
                                     onClick={() => {
                                         setExerciseInput(exercise[1].name);

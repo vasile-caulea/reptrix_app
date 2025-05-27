@@ -31,6 +31,17 @@ export async function getAllExerciseCategories() {
     }
 }
 
+
+export async function getExerciseById(exerciseId) {
+    const response = await axios.get(`${WGER_API_URL}${WGER_API_VERSION}/${WGER_API_EXERCISE_INFO_PATH}${exerciseId}`);
+    if (response.status === 200) {
+        return response.data;
+    }
+    else {
+        throw new Error(response.statusText);
+    }
+}
+
 export async function addWorkout(workout) {
 
     const { userId, headers } = getAuthHeaders();

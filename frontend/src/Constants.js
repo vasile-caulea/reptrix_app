@@ -13,4 +13,4 @@ export const SIGNUP_PATH = '/signup';
 export const VERIFY_PATH = '/verify';
 
 // WORKOUT API
-export const WORKOUT_API_URL = 'http://localhost:3002';
+export const WORKOUT_API_URL = 'https://e8u6482ibc.execute-api.us-east-1.amazonaws.com';

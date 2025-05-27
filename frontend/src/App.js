@@ -18,6 +18,7 @@ import { useAuthContext } from "./context/AuthContext";
 import { IDM_API_URL, VERIFY_PATH } from "./Constants";
 import WorkoutCalendar from "./components/WorkoutCalendar";
 import UserProfile from "./components/UserProfile";
+import Exercises from "./components/Exercises";
 
 function App() {
 
@@ -63,6 +64,7 @@ function App() {
           } />
           <Route path="/workout-calendar" element={<WorkoutCalendar />} />
           <Route path="/profile" element={<UserProfile />} />
+          <Route path="/exercises" element={<Exercises />} />
         </Route>
         <Route path="/login" element={
           <RedirectIfAuth>

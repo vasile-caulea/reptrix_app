@@ -28,8 +28,13 @@ function AddWorkout() {
             return;
         }
 
-        if (!formData.date || !formData.repetitions || !formData.sets) {
+        if (!formData.date || !formData.repetitions || !formData.sets || !formData.weight) {
             toast.error("Please fill in all required fields.");
+            return;
+        }
+
+        if (formData.repetitions <= 0 || formData.sets <= 0 || formData.weight < 0) {
+            toast.error("Repetitions, sets must be greater than 0 and weight cannot be negative.");
             return;
         }
 
@@ -54,7 +59,7 @@ function AddWorkout() {
                 return;
             }
             toast.dismiss();
-            console.error("Error adding workout:", error);
+            console.log("Error adding workout:", error);
             toast.error("Error adding workout. Please try again.");
         }
     }
@@ -106,7 +111,7 @@ function AddWorkout() {
 
                 <input type="number" name="sets" onChange={handleChange} placeholder="Sets" className={inputStyleClass} required />
                 <input type="number" name="repetitions" onChange={handleChange} placeholder="Repetitions" className={inputStyleClass} required />
-                <input type="number" step="0.1" name="weight" onChange={handleChange} placeholder="Weight (kg)" className={inputStyleClass} />
+                <input type="number" step="0.1" name="weight" onChange={handleChange} placeholder="Weight (kg)" className={inputStyleClass} required />
                 <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white rounded p-2">Add</button>
             </form>
             {
