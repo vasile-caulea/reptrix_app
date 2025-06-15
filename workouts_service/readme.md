@@ -26,7 +26,7 @@ This service uses the following main packages:
 - cors - Middleware for enabling Cross-Origin Resource Sharing.
 - pg - PostgreSQL client for Node.js.
 
-## Enviornment variables to be set:
+## Environment variables to be set:
 - IDM_API_URL - URL of the Identity Management service (used for token verification)
 - PORT - The port on which the server will run (required only for local run)
 - DB_USER - Database username
