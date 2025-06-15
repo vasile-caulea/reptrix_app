@@ -14,6 +14,7 @@ export async function getWorkoutsController(req, res) {
 
     try {
         const workouts = await getWorkouts(userId, query);
+        console.log('Workouts:', workouts);
         res.status(200).json(workouts);
     } catch (error) {
         console.error('Error getting workouts:', error);

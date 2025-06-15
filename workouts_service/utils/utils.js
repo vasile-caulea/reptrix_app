@@ -87,3 +87,8 @@ export function validateUpdateWorkoutData(workoutData) {
     }
     return validatedData;
 }
+
+export function normalizeDate(dateStr) {
+    const d = new Date(dateStr);
+    return d.toISOString().split('T')[0];
+}

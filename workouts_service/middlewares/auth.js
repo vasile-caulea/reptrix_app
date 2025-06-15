@@ -1,6 +1,5 @@
 
-// const IDM_API_URL = process.env.IDM_API_URL || 'http://localhost:3001';
-const IDM_API_URL = 'https://cg0ssf2fsb.execute-api.us-east-1.amazonaws.com';
+const IDM_API_URL = process.env.IDM_API_URL || 'http://localhost:3001';
 
 export async function verifyTokenMiddleware(req, res, next) {
     const authHeader = req.headers['authorization'];

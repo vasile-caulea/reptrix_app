@@ -1,4 +1,5 @@
 import { pool } from '../db/index.js';
+import {normalizeDate} from '../utils/utils.js';
 
 export async function getWorkouts(userId, query) {
   const { startDate, endDate, exerciseCatId, exerciseId } = query;
@@ -19,10 +20,10 @@ export async function getWorkouts(userId, query) {
 
   if (startDate && endDate) {
     sql += ` AND date BETWEEN $${idx++} AND $${idx++}`;
-    values.push(startDate, endDate);
+    values.push(normalizeDate(startDate), normalizeDate(endDate));
   } else if (startDate) {
     sql += ` AND date = $${idx++}`;
-    values.push(startDate);
+    values.push(normalizeDate(startDate));
   }
 
   const res = await pool.query(sql, values);
@@ -36,7 +37,7 @@ export async function getWorkoutDates(userId, query) {
   const res = await pool.query(
     `SELECT DISTINCT date FROM "Workout" 
      WHERE "userID" = $1 AND date BETWEEN $2 AND $3`,
-    [userId, startDate, endDate]
+    [userId, normalizeDate(startDate), normalizeDate(endDate)]
   );
 
   return res.rows;

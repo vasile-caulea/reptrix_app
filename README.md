@@ -1,1 +1,3 @@
-# reptrix_app
+# Reptrix App
+
+![Application diagram](diagram.jpg)

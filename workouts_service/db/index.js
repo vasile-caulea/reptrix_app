@@ -16,24 +16,6 @@ export const pool = new Pool({
   },
 });
 
-// const DB_USER = 'postgres_admin';
-// const DB_USER_PASSWORD = 'Fc0cgOy9mog!';
-// const DB_HOST = 'reptrix-app.crysi8sa0ibv.us-east-1.rds.amazonaws.com';
-// const DB_NAME = 'reptrixDB';
-
-// export const pool = new Pool({
-//   user: DB_USER,
-//   host: DB_HOST,
-//   database: DB_NAME,
-//   password: DB_USER_PASSWORD,
-//   port: 5432,
-//   ssl: {
-//     rejectUnauthorized: true,
-//     ca: sslCert,
-//   },
-// });
-
-
 process.on('exit', () => {
   pool.end();
 });

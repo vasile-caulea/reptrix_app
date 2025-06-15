@@ -22,7 +22,7 @@ function WorkoutStatistics({ workouts, displayTitle = true }) {
     const [selectedExercise, setSelectedExercise] = useState("all");
 
     const allDates = useMemo(() => {
-        const datesSet = new Set(workouts.map((w) => new Date(w.date).toLocaleDateString()));
+        const datesSet = new Set(workouts.map((w) => new Date(w.date).toISOString().split('T')[0]));
         return Array.from(datesSet).sort((a, b) => new Date(a) - new Date(b));
     }, [workouts]);
 
@@ -46,7 +46,7 @@ function WorkoutStatistics({ workouts, displayTitle = true }) {
                     const found = workouts.find(
                         (w) =>
                             w.exerciseID === exId &&
-                            new Date(w.date).toLocaleDateString() === workoutDate.date
+                            new Date(w.date).toISOString().split('T')[0] === workoutDate.date
                     );
                     // for each date, set the weight of the exercise if found
                     workoutDate[exId] = found ? found.weight : null;
@@ -57,7 +57,7 @@ function WorkoutStatistics({ workouts, displayTitle = true }) {
             return workouts
                 .filter((w) => w.exerciseID.toString() === selectedExercise)
                 .map((w) => ({
-                    date: new Date(w.date).toLocaleDateString(),
+                    date: new Date(w.date).toISOString().split('T')[0],
                     weight: w.weight,
                 }));
         }
@@ -89,11 +89,11 @@ function WorkoutStatistics({ workouts, displayTitle = true }) {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis
                         dataKey="date"
-                        ticks={
-                            chartData.length > 1
-                                ? [chartData[0]?.date, chartData[chartData.length - 1]?.date]
-                                : undefined
-                        }
+                        // ticks={
+                        //     chartData.length > 1
+                        //         ? [chartData[0]?.date, chartData[chartData.length - 1]?.date]
+                        //         : undefined
+                        // }
                     />
                     <YAxis
                         label={{
