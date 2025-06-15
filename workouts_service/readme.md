@@ -17,22 +17,25 @@ All endpoints require a valid JWT token in the `Authorization` header as a Beare
 
 ## Setup
 
-1. `npm install`
+Install all required dependencies:
+```shell
+npm install
+```
 
 ## Dependencies
 
 This service uses the following main packages:
-- express - Web Framework for handling API routes.
-- cors - Middleware for enabling Cross-Origin Resource Sharing.
-- pg - PostgreSQL client for Node.js.
+- `express` - Web Framework for handling API routes.
+- `cors` - Middleware for enabling Cross-Origin Resource Sharing.
+- `pg` - PostgreSQL client for Node.js.
 
 ## Environment variables to be set:
-- IDM_API_URL - URL of the Identity Management service (used for token verification)
-- PORT - The port on which the server will run (required only for local run)
-- DB_USER - Database username
-- DB_HOST - Database host
-- DB_NAME - Name of the PostgreSQL database
-- DB_USER_PASSWORD - Password for the database user
+- `IDM_API_URL` - URL of the Identity Management service (used for token verification)
+- `PORT` - The port on which the server will run (required only for local run)
+- `DB_USER` - Database username
+- `DB_HOST` - Database host
+- `DB_NAME` - Name of the PostgreSQL database
+- `DB_USER_PASSWORD` - Password for the database user
 
 ## Running the service
 
@@ -106,5 +109,5 @@ Allowed JSON Body Fields:
 - `sets`: Integer
 - `weight`: Float
 
-You must provide at least one of these fields.
+At least one of these fields is required.
 

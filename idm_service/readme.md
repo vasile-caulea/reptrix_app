@@ -25,12 +25,12 @@ npm install
 
 This service uses the following main packages:
 
-- express - Web Framework for handling API routes.
-- http-status-codes - Clean and descriptive HTTP status codes.
-- uuid - Generate unique user IDs.
-- bcrypt - Secure password hashing.
-- jsonwebtoken - JWT generation and verification.
-- cors - Middleware for enabling Cross-Origin Resource Sharing.
+- `express` - Web Framework for handling API routes.
+- `http-status-codes` - Clean and descriptive HTTP status codes.
+- `uuid` - Generate unique user IDs.
+- `bcrypt` - Secure password hashing.
+- `jsonwebtoken` - JWT generation and verification.
+- `cors` - Middleware for enabling Cross-Origin Resource Sharing.
 
 For local development with DynamoDB:
 ```
@@ -38,7 +38,7 @@ npm install @aws-sdk/client-dynamodb @aws-sdk/lib-dynamodb
 ```
 
 ## Environment variables
-- JWT_SECRET - Secret used to sign and verify JWT tokens.
+- `JWT_SECRET` - Secret used to sign and verify JWT tokens.
 
 ## Running the service
 
